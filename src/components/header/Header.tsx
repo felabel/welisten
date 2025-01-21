@@ -5,10 +5,10 @@ import styles from "./Header.module.scss";
 import { FeedBackBtn, GoBackBtn } from "../shared/FeedBackBtn";
 
 type Props = {
-  hasIcon: boolean;
-  title: string;
-  hasBackBtn: boolean;
-  isHome: boolean;
+  hasIcon?: boolean;
+  title?: string;
+  hasBackBtn?: boolean;
+  isHome?: boolean;
 };
 const Header = ({
   hasIcon = true,

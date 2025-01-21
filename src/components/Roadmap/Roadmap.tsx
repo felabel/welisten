@@ -109,8 +109,8 @@ const Roadmap: React.FC = () => {
 
     setRoadmapData((prev) => {
       const updatedData = { ...prev };
-
       // Remove the card from its old category
+      // @ts-ignore
       updatedData[oldCategory] = updatedData[oldCategory].filter(
         (item: any) => item.id !== card.id
       );

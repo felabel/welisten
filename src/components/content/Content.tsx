@@ -3,7 +3,7 @@ import SuggestionCard from "../suggestion/SuggestionCard";
 import EmptyState from "../empty/EmptyState";
 import { suggestions } from "../../data/suggestions";
 const Content = () => {
-  const [empty, setEmpty] = useState(false);
+  const [empty] = useState(false);
 
   return (
     <div>

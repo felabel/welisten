@@ -1,10 +1,7 @@
-import { useNavigate } from "react-router-dom";
 import styles from "./form.module.scss";
 import { FeedBackBtn, GoBackBtn } from "../shared/FeedBackBtn";
 import plus from "../../assets/plus.svg";
 const FeedbackForm = () => {
-  const navigate = useNavigate();
-
   return (
     <div className={styles.feedbackFormContainer}>
       <GoBackBtn stroke="#4661E6" textColor="#647196" />

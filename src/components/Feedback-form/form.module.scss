@@ -1,9 +1,18 @@
+@import "../../styles/index";
+
 .feedbackFormContainer {
   max-width: 540px;
   width: 540px;
   background-color: #f7f8fc;
   margin: auto;
   margin-top: 3rem;
+  overflow-x: hidden;
+  @include mq(640px) {
+    max-width: 90%;
+    width: 90%;
+    margin: auto;
+    margin-top: 3rem;
+  }
 }
 
 .goBackButton {
@@ -23,6 +32,14 @@
   padding: 2rem;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   position: relative;
+  box-sizing: border-box;
+  @include mq(640px) {
+    max-width: 100%;
+    width: 100%;
+    margin: auto;
+    margin-top: 2rem;
+    box-sizing: border-box;
+  }
 }
 
 .plusIconContainer {

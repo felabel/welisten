@@ -1,6 +1,7 @@
 @import "../../styles/index";
 .sidebar {
   border-radius: 10px;
+  box-sizing: border-box;
   @include mq(820px) {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -8,6 +9,7 @@
   }
   @include mq(640px) {
     display: block;
+    width: 100%;
   }
   .brand {
     padding: 32px;

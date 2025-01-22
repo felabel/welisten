@@ -1,3 +1,5 @@
+@import "../../styles/index";
+
 .header {
   display: flex;
   justify-content: space-between;
@@ -7,6 +9,13 @@
   border-radius: 8px;
   color: var(--white);
   font-family: "Jost-Regular", sans-serif;
+  @include mq(640px) {
+    width: 100%;
+    box-sizing: border-box;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
 
   .suggestions {
     display: flex;
@@ -17,10 +26,16 @@
     h2 {
       font-size: 1.2rem;
       font-weight: bold;
+      @include mq(640px) {
+        font-size: 14px;
+      }
     }
     span {
       font-family: "Jost-Regular";
       font-size: 14px;
+      @include mq(640px) {
+        display: none;
+      }
     }
   }
 

@@ -5,6 +5,7 @@ import Notfound from "./Pages/Notfound";
 import FeedbackDetails from "./components/comment-details/CommentDetails";
 import FeedbackForm from "./components/Feedback-form/FeedbackForm";
 import Roadmap from "./components/Roadmap/Roadmap";
+import Auth from "./components/Auth/Auth";
 
 const App = () => {
   return (
@@ -12,6 +13,8 @@ const App = () => {
       <Routes>
         {/* Define your routes here */}
         <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Auth />} />
+
         <Route path="/feedback/:id" element={<FeedbackDetails />} />
         <Route path="/feedback/create" element={<FeedbackForm />} />
         <Route path="/roadmap" element={<Roadmap />} />

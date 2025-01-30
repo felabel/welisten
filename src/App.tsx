@@ -11,10 +11,8 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        {/* Define your routes here */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Auth />} />
-
         <Route path="/feedback/:id" element={<FeedbackDetails />} />
         <Route path="/feedback/create" element={<FeedbackForm />} />
         <Route path="/roadmap" element={<Roadmap />} />

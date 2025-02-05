@@ -8,6 +8,7 @@ import {
 } from "../../data/suggestions";
 import { FeedBackBtn, GoBackBtn } from "../shared/FeedBackBtn";
 import Replies from "../Replies/Replies";
+
 const FeedbackDetails = () => {
   const { id } = useParams();
   const feedbackId = Number(id); // Convert id to a number to match the array's data

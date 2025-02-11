@@ -25,7 +25,12 @@ export const FeedBackBtn = ({
 
   return (
     <div>
-      <button className={styles.addButton} onClick={handleClick} type={type}>
+      <button
+        className={`${styles.addButton} ${disabled ? styles.disabled_btn : ""}`}
+        onClick={handleClick}
+        type={type}
+        disabled={disabled} // This ensures the button is actually disabled in the DOM
+      >
         {text}
       </button>
     </div>

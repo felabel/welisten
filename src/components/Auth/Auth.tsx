@@ -44,7 +44,7 @@ const Auth = () => {
 
   const onRegisterSubmit = async (data: RegisterFormInputs) => {
     try {
-      const response = await registerUser(data).unwrap();
+      await registerUser(data).unwrap();
       navigate("/dashoard");
       setIsSignUp(false);
     } catch (error) {

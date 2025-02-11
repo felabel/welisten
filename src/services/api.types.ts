@@ -12,3 +12,7 @@ export type AuthResponse = {
   message: string;
   token?: string;
 };
+
+export type categoryResponse = {
+  categories: string[];
+};

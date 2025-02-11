@@ -5,9 +5,13 @@ import TopArrowIcon from "../../assets/icons/TopArrowIcon";
 export const FeedBackBtn = ({
   text,
   customClick,
+  disabled,
+  type,
 }: {
   text: string;
   customClick?: () => void;
+  disabled?: boolean;
+  type?: "button" | "submit" | "reset" | undefined;
 }) => {
   const navigate = useNavigate();
 
@@ -21,7 +25,7 @@ export const FeedBackBtn = ({
 
   return (
     <div>
-      <button className={styles.addButton} onClick={handleClick}>
+      <button className={styles.addButton} onClick={handleClick} type={type}>
         {text}
       </button>
     </div>
@@ -35,7 +39,7 @@ type bntProps = {
 export const GoBackBtn = ({ stroke, textColor }: bntProps) => {
   const navigate = useNavigate();
   return (
-    <div className={styles.back_btn} onClick={() => navigate(-1)}>
+    <button className={styles.back_btn} onClick={() => navigate(-1)}>
       <span className={styles.icon}>
         <TopArrowIcon stroke={stroke || "#CDD2EE"} />
       </span>
@@ -45,6 +49,6 @@ export const GoBackBtn = ({ stroke, textColor }: bntProps) => {
       >
         Go Back
       </span>
-    </div>
+    </button>
   );
 };

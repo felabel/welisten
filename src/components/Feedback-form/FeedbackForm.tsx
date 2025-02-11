@@ -1,7 +1,46 @@
+import { useNavigate } from "react-router-dom";
+import { useForm, SubmitHandler, Controller } from "react-hook-form";
+import { toast } from "react-toastify";
 import styles from "./form.module.scss";
 import { FeedBackBtn, GoBackBtn } from "../shared/FeedBackBtn";
 import plus from "../../assets/plus.svg";
+import {
+  useCreateFeedbackMutation,
+  useGetCategoriesQuery,
+} from "../../services/protectedApi";
+
+type FeedbackInputs = {
+  title: string;
+  category: string;
+  detail: string;
+};
+
 const FeedbackForm = () => {
+  const categoriesQueryResult = useGetCategoriesQuery();
+  const categories = categoriesQueryResult.data?.categories;
+  const navigate = useNavigate();
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<FeedbackInputs>({
+    mode: "onChange", // Ensure validation runs on each input change
+  });
+
+  const [createFeedback] = useCreateFeedbackMutation();
+
+  const onSubmit: SubmitHandler<FeedbackInputs> = async (data) => {
+    try {
+      // Handle the feedback submission logic
+      const response = await createFeedback(data).unwrap();
+      toast.success(response?.message);
+      navigate("/dashboard");
+    } catch (error) {
+      toast.error("Failed to submit feedback.");
+    }
+  };
+
   return (
     <div className={styles.feedbackFormContainer}>
       <GoBackBtn stroke="#4661E6" textColor="#647196" />
@@ -10,7 +49,7 @@ const FeedbackForm = () => {
           <img src={plus} alt="Plus Icon" className={styles.plusIcon} />
         </div>
         <h1 className={styles.formTitle}>Create New Feedback</h1>
-        <form className={styles.form}>
+        <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
           <div className={styles.formGroup}>
             <label htmlFor="feedbackTitle" className={styles.label}>
               Feedback Title
@@ -18,12 +57,23 @@ const FeedbackForm = () => {
             <label htmlFor="feedbackTitle" className={styles.label_sm}>
               Add a short, descriptive headline
             </label>
-            <input
-              type="text"
-              id="feedbackTitle"
-              placeholder=""
-              className={styles.input}
+            <Controller
+              name="title"
+              control={control}
+              rules={{ required: "Title is required" }}
+              render={({ field }) => (
+                <input
+                  type="text"
+                  id="feedbackTitle"
+                  placeholder="Enter your feedback title"
+                  className={styles.input}
+                  {...field}
+                />
+              )}
             />
+            {errors.title && (
+              <span className={styles.errorText}>{errors.title.message}</span>
+            )}
           </div>
 
           <div className={styles.formGroup}>
@@ -33,12 +83,25 @@ const FeedbackForm = () => {
             <label htmlFor="feedbackTitle" className={styles.label_sm}>
               Choose a category for your feedback
             </label>
-            <select id="category" className={styles.select}>
-              <option value="feature">Feature</option>
-              <option value="bug">Bug</option>
-              <option value="ui">UI</option>
-              <option value="other">Other</option>
-            </select>
+            <Controller
+              name="category"
+              control={control}
+              rules={{ required: "Category is required" }}
+              render={({ field }) => (
+                <select {...field} id="category" className={styles.select}>
+                  {categories?.map((category, index) => (
+                    <option key={index} value={category}>
+                      {category}
+                    </option>
+                  ))}
+                </select>
+              )}
+            />
+            {errors.category && (
+              <span className={styles.errorText}>
+                {errors.category.message}
+              </span>
+            )}
           </div>
 
           <div className={styles.formGroup}>
@@ -49,19 +112,32 @@ const FeedbackForm = () => {
               Include any specific comments on what should be improved, added,
               etc.
             </label>
-            <textarea
-              id="feedbackDetail"
-              placeholder="Include any specific comments on what should be improved, added, etc."
-              className={styles.textarea}
+            <Controller
+              name="detail"
+              control={control}
+              rules={{ required: "Detail is required" }}
+              render={({ field }) => (
+                <textarea
+                  id="feedbackDetail"
+                  placeholder="Include any specific comments on what should be improved, added, etc."
+                  className={styles.textarea}
+                  {...field}
+                />
+              )}
             />
+            {errors.detail && (
+              <span className={styles.errorText}>{errors.detail.message}</span>
+            )}
           </div>
+
           <div className={styles.buttonGroup}>
             <button type="button" className={styles.cancelButton}>
               Cancel
             </button>
             <FeedBackBtn
               text="Add Feedback"
-              customClick={() => alert("feedback submitted")}
+              disabled={!isValid}
+              type="submit"
             />
           </div>
         </form>

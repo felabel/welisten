@@ -1,12 +1,14 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 import {
   useRegisterUserMutation,
   useLoginUserMutation,
 } from "../../services/authApi";
 import styles from "./auth.module.scss";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { useAppDispatch } from "../../store/store.hook";
+import { setUser, setToken } from "../../store/authSlice";
 
 type RegisterFormInputs = {
   username: string;
@@ -22,6 +24,8 @@ type LoginFormInputs = {
 const Auth = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
   const {
     register: registerUserForm,
     handleSubmit: handleRegisterSubmit,
@@ -39,25 +43,29 @@ const Auth = () => {
   const [loginUser, { isLoading: isLoggingIn }] = useLoginUserMutation();
 
   const onRegisterSubmit = async (data: RegisterFormInputs) => {
-    console.log("register data", data);
     try {
-      await registerUser(data).unwrap();
+      const response = await registerUser(data).unwrap();
       navigate("/dashoard");
       setIsSignUp(false);
     } catch (error) {
-      console.log(error);
-      // alert(error?.data?.message || "Registration failed");
+      alert("Registration failed");
     }
   };
 
   const onLoginSubmit = async (data: LoginFormInputs) => {
     try {
-      await loginUser(data).unwrap();
-      navigate("/dashoard");
-      toast.success("Login successful!");
+      const response = await loginUser(data).unwrap(); // unwrap the response to get data directly
+      if (response?.token) {
+        navigate("/dashboard");
+        dispatch(setUser({ email: data.email, token: response.token }));
+        dispatch(setToken(response.token)); // Store token in state
+      } else {
+        toast.error("Login failed: No token received");
+      }
     } catch (error) {
+      console.error("Login error:", error);
       // @ts-ignore
-      toast.error(error?.data?.error || "Login failed");
+      toast.error(error?.data?.error || "Login failed"); // Use the error message from the response if available
     }
   };
 

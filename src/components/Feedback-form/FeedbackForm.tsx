@@ -2,7 +2,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { toast } from "react-toastify";
 import styles from "./form.module.scss";
-import { FeedBackBtn, GoBackBtn } from "../shared/FeedBackBtn";
+import { GoBackBtn } from "../shared/FeedBackBtn";
 import plus from "../../assets/plus.svg";
 import {
   useCreateFeedbackMutation,
@@ -20,10 +20,9 @@ type FeedbackInputs = {
 
 const FeedbackForm = () => {
   const [isEdit, setIsEdit] = useState(false);
-
+  const navigate = useNavigate();
   const categoriesQueryResult = useGetCategoriesQuery();
   const categories = categoriesQueryResult.data?.categories;
-  const navigate = useNavigate();
   const { id } = useParams();
   const feedbackId = id ?? "";
   const singleFeedbackQueryResult = useGetFeedbackByIdQuery(feedbackId);
@@ -55,7 +54,7 @@ const FeedbackForm = () => {
         const response = await createFeedback(data).unwrap();
         toast.success(response?.message || "Feedback submitted successfully!");
       }
-      // navigate("/dashboard");
+      navigate("/dashboard");
     } catch (error) {
       toast.error("Failed to submit feedback.");
     }
@@ -166,7 +165,11 @@ const FeedbackForm = () => {
             <button type="button" className={styles.cancelButton}>
               Cancel
             </button>
-            <button type="submit" className={styles.addButton}>
+            <button
+              type="submit"
+              className={styles.addButton}
+              disabled={!isValid}
+            >
               {isEdit ? "Update Feedback" : "Add Feedback"}
             </button>
           </div>

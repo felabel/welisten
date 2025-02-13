@@ -1,16 +1,21 @@
 import { useState } from "react";
 import SuggestionCard from "../suggestion/SuggestionCard";
 import EmptyState from "../empty/EmptyState";
-import { suggestions } from "../../data/suggestions";
+import { useGetFeedbackQuery } from "../../services/protectedApi";
 const Content = () => {
   const [empty] = useState(false);
 
+  const feedbackQueryResult = useGetFeedbackQuery();
+  const feedbacks = feedbackQueryResult.data?.feedbacks;
+
+  console.log("feedbacks", feedbacks);
+  // getfeedback here
   return (
     <div>
       {empty ? (
         <EmptyState />
       ) : (
-        suggestions.map((suggestion) => (
+        feedbacks?.map((suggestion) => (
           <SuggestionCard key={suggestion.id} {...suggestion} />
         ))
       )}

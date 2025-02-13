@@ -18,6 +18,7 @@ const App = () => {
         <Route path="/test" element={<TestPage />} />
         <Route path="/feedback/:id" element={<FeedbackDetails />} />
         <Route path="/feedback/create" element={<FeedbackForm />} />
+        <Route path="/feedback/edit/:id" element={<FeedbackForm />} />
         <Route path="/roadmap" element={<Roadmap />} />
         {/* Fallback route for unmatched paths */}
         <Route path="*" element={<Notfound />} />

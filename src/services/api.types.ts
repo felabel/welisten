@@ -16,3 +16,33 @@ export type AuthResponse = {
 export type categoryResponse = {
   categories: string[];
 };
+
+export type FeedBack = {
+  id: number;
+  user: string;
+  title: string;
+  category: string;
+  detail: string;
+  upvotes?: number;
+  comments?: Comment[];
+};
+export interface Comment {
+  id: string;
+  userId: string;
+  text: string;
+  createdAt: string;
+  replies: Reply[];
+}
+
+export interface Reply {
+  id: string;
+  userId: string;
+  text: string;
+  createdAt: string;
+}
+
+export type FeedBackResponse = {
+  message: string;
+  feedbacks: FeedBack[];
+  feedback?: FeedBack;
+};

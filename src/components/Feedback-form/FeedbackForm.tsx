@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { toast } from "react-toastify";
 import styles from "./form.module.scss";
@@ -7,7 +7,10 @@ import plus from "../../assets/plus.svg";
 import {
   useCreateFeedbackMutation,
   useGetCategoriesQuery,
+  useGetFeedbackByIdQuery,
+  useUpdateFeedbackMutation, // ✅ Import the update feedback API
 } from "../../services/protectedApi";
+import { useEffect, useState } from "react";
 
 type FeedbackInputs = {
   title: string;
@@ -16,30 +19,57 @@ type FeedbackInputs = {
 };
 
 const FeedbackForm = () => {
+  const [isEdit, setIsEdit] = useState(false);
+
   const categoriesQueryResult = useGetCategoriesQuery();
   const categories = categoriesQueryResult.data?.categories;
   const navigate = useNavigate();
+  const { id } = useParams();
+  const feedbackId = id ?? "";
+  const singleFeedbackQueryResult = useGetFeedbackByIdQuery(feedbackId);
+  const feedback = singleFeedbackQueryResult.data?.feedback;
 
   const {
     control,
     handleSubmit,
+    setValue, // ✅ Allows setting form values for prefill
     formState: { errors, isValid },
   } = useForm<FeedbackInputs>({
     mode: "onChange", // Ensure validation runs on each input change
   });
 
   const [createFeedback] = useCreateFeedbackMutation();
+  const [updateFeedback] = useUpdateFeedbackMutation(); // ✅ Get update mutation
 
   const onSubmit: SubmitHandler<FeedbackInputs> = async (data) => {
     try {
-      // Handle the feedback submission logic
-      const response = await createFeedback(data).unwrap();
-      toast.success(response?.message);
-      navigate("/dashboard");
+      if (isEdit) {
+        const response = await updateFeedback({
+          // @ts-ignore
+          id: feedbackId,
+          ...data,
+        }).unwrap();
+
+        toast.success(response?.message || "Feedback  successfully!");
+      } else {
+        const response = await createFeedback(data).unwrap();
+        toast.success(response?.message || "Feedback submitted successfully!");
+      }
+      // navigate("/dashboard");
     } catch (error) {
       toast.error("Failed to submit feedback.");
     }
   };
+
+  // ✅ Pre-fill form when editing
+  useEffect(() => {
+    if (feedbackId && feedback) {
+      setIsEdit(true);
+      setValue("title", feedback.title);
+      setValue("category", feedback.category);
+      setValue("detail", feedback.detail);
+    }
+  }, [feedbackId, feedback, setValue]);
 
   return (
     <div className={styles.feedbackFormContainer}>
@@ -48,7 +78,9 @@ const FeedbackForm = () => {
         <div className={styles.plusIconContainer}>
           <img src={plus} alt="Plus Icon" className={styles.plusIcon} />
         </div>
-        <h1 className={styles.formTitle}>Create New Feedback</h1>
+        <h1 className={styles.formTitle}>
+          {isEdit ? "Edit Feedback" : "Create New Feedback"}
+        </h1>
         <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
           <div className={styles.formGroup}>
             <label htmlFor="feedbackTitle" className={styles.label}>
@@ -134,11 +166,9 @@ const FeedbackForm = () => {
             <button type="button" className={styles.cancelButton}>
               Cancel
             </button>
-            <FeedBackBtn
-              text="Add Feedback"
-              disabled={!isValid}
-              type="submit"
-            />
+            <button type="submit" className={styles.addButton}>
+              {isEdit ? "Update Feedback" : "Add Feedback"}
+            </button>
           </div>
         </form>
       </div>

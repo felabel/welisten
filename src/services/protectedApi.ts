@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { API_BASE_URL } from "../config";
-import { categoryResponse } from "./api.types";
+import { categoryResponse, FeedBack, FeedBackResponse } from "./api.types";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: API_BASE_URL,
@@ -25,6 +25,27 @@ export const protectedApi = createApi({
         body: feedbackData,
       }),
     }),
+    // get feedback
+    getFeedback: builder.query<FeedBackResponse, void>({
+      query: () => ({
+        url: "/feedback",
+        method: "GET",
+      }),
+    }),
+
+    getFeedbackById: builder.query<FeedBackResponse, string>({
+      query: (id) => ({
+        url: `/feedback/${id}`,
+        method: "GET",
+      }),
+    }),
+    updateFeedback: builder.mutation<FeedBackResponse, FeedBack>({
+      query: (feedbackData) => ({
+        url: `/feedback/${feedbackData.id}`,
+        method: "PUT",
+        body: feedbackData,
+      }),
+    }),
 
     // get categoris
     getCategories: builder.query<categoryResponse, void>({
@@ -36,5 +57,10 @@ export const protectedApi = createApi({
   }),
 });
 
-export const { useCreateFeedbackMutation, useGetCategoriesQuery } =
-  protectedApi;
+export const {
+  useCreateFeedbackMutation,
+  useGetCategoriesQuery,
+  useGetFeedbackQuery,
+  useGetFeedbackByIdQuery,
+  useUpdateFeedbackMutation,
+} = protectedApi;

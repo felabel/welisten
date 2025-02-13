@@ -8,7 +8,7 @@ const SuggestionCard = ({
   category,
   upvotes,
   comments,
-  content,
+  detail,
   id,
 }: any) => {
   const navigave = useNavigate();
@@ -22,7 +22,7 @@ const SuggestionCard = ({
       </div>
       <div className={styles.details}>
         <h3>{title}</h3>
-        <p className={styles.content}>{content}</p>
+        <p className={styles.content}>{detail}</p>
         <span className={styles.category}>{category}</span>
       </div>
       <div className={styles.comment_wrapper}>

@@ -162,7 +162,11 @@ const FeedbackForm = () => {
           </div>
 
           <div className={styles.buttonGroup}>
-            <button type="button" className={styles.cancelButton}>
+            <button
+              type="button"
+              className={styles.cancelButton}
+              onClick={() => navigate("/dashboard")}
+            >
               Cancel
             </button>
             <button

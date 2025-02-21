@@ -18,6 +18,9 @@
   h1 {
     font-weight: bold;
     margin: 0;
+    @include mq(768px) {
+      font-size: 20px;
+    }
   }
 
   p {
@@ -26,6 +29,9 @@
     line-height: 20px;
     letter-spacing: 0.5px;
     margin: 20px 0 30px;
+    @include mq(640px) {
+      font-size: 12px;
+    }
   }
 
   span {
@@ -37,6 +43,9 @@
     font-size: 14px;
     text-decoration: none;
     margin: 15px 0;
+    @include mq(640px) {
+      font-size: 12px;
+    }
   }
 
   .container {
@@ -48,6 +57,9 @@
     width: 768px;
     max-width: 100%;
     min-height: 480px;
+    @include mq(768px) {
+      width: 95%;
+    }
   }
 
   .formContainer form {
@@ -60,6 +72,9 @@
     align-items: center;
     text-align: center;
     gap: 1rem;
+    @include mq(768px) {
+      padding: 0 8px;
+    }
   }
 
   .socialContainer {
@@ -170,6 +185,9 @@
     text-align: center;
     transition: transform 0.6s ease-in-out;
     gap: 2rem;
+    @include mq(768px) {
+      padding: 0 8px;
+    }
   }
 
   .overlayRight {

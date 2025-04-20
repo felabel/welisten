@@ -27,10 +27,11 @@ const FeedbackDetails = () => {
         </div>
 
         <SuggestionCard
+          // @ts-ignore
           title={suggestion?.title}
           category={suggestion?.category}
-          // upvotes={suggestion?.upvotes}
-          // comments={suggestion?.comments}
+          // @ts-ignore
+
           detail={suggestion?.detail}
         />
 

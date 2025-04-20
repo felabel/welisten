@@ -1,6 +1,12 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { API_BASE_URL } from "../config";
-import { categoryResponse, FeedBack, FeedBackResponse } from "./api.types";
+import {
+  AddCommentRequest,
+  AddReplyRequest,
+  categoryResponse,
+  FeedBack,
+  FeedBackResponse,
+} from "./api.types";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: API_BASE_URL,
@@ -47,6 +53,41 @@ export const protectedApi = createApi({
       }),
     }),
 
+    // add comment on figma
+    addComment: builder.mutation<void, AddCommentRequest>({
+      query: (commentData) => ({
+        url: "/feedback/comment",
+        method: "POST",
+        body: commentData,
+      }),
+    }),
+
+    //upvoteFeedback
+    upvoteFeedback: builder.mutation<void, { id: string }>({
+      query: (data) => ({
+        url: "/feedback/upvote",
+        method: "POST",
+        body: data,
+      }),
+    }),
+
+    // reply comment
+    addReply: builder.mutation<void, AddReplyRequest>({
+      query: (replyData) => ({
+        url: "/feedback/reply",
+        method: "POST",
+        body: replyData,
+      }),
+    }),
+
+    // get status count
+    getStatusCount: builder.query<Record<string, number>, void>({
+      query: () => ({
+        url: "/feedback/status-count",
+        method: "GET",
+      }),
+    }),
+
     // get categoris
     getCategories: builder.query<categoryResponse, void>({
       query: () => ({
@@ -63,4 +104,8 @@ export const {
   useGetFeedbackQuery,
   useGetFeedbackByIdQuery,
   useUpdateFeedbackMutation,
+  useAddCommentMutation,
+  useAddReplyMutation,
+  useGetStatusCountQuery,
+  useUpvoteFeedbackMutation,
 } = protectedApi;

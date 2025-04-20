@@ -7,14 +7,24 @@ const Content = () => {
 
   const feedbackQueryResult = useGetFeedbackQuery();
   const feedbacks = feedbackQueryResult.data?.feedbacks;
+  console.log("feedbacks", feedbacks);
 
   return (
     <div>
       {empty ? (
         <EmptyState />
       ) : (
-        feedbacks?.map((suggestion) => (
-          <SuggestionCard key={suggestion.id} {...suggestion} />
+        feedbacks?.map((item, i) => (
+          <div key={i}>
+            <SuggestionCard
+              id={item.id}
+              title={item.title}
+              detail={item.detail}
+              upvotes={item.upvotes}
+              comments={item.comments?.length}
+              category={item.category}
+            />
+          </div>
         ))
       )}
     </div>

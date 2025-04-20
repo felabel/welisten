@@ -3,6 +3,15 @@ import CommentIcon from "../../assets/icons/CommentIcon";
 import TopArrowIcon from "../../assets/icons/TopArrowIcon";
 import styles from "./SuggestionCard.module.scss";
 
+export interface SuggestionCardProps {
+  id: string | number;
+  title: string;
+  detail: string;
+  upvotes?: number;
+  comments?: number;
+  category?: string;
+}
+
 const SuggestionCard = ({
   title,
   category,
@@ -10,7 +19,7 @@ const SuggestionCard = ({
   comments,
   detail,
   id,
-}: any) => {
+}: SuggestionCardProps) => {
   const navigave = useNavigate();
   return (
     <div className={styles.card} onClick={() => navigave(`/feedback/${id}`)}>

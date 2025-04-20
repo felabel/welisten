@@ -16,9 +16,13 @@ const persistConfig = {
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const store = configureStore({
-  reducer: persistedReducer, // Use the combined reducer here
+  reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware()
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: ["persist/PERSIST", "persist/REHYDRATE"], // Add these to ignore redux-persist actions
+      },
+    })
       .concat(authApi.middleware)
       .concat(protectedApi.middleware),
 });

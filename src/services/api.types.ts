@@ -46,3 +46,16 @@ export type FeedBackResponse = {
   feedbacks: FeedBack[];
   feedback?: FeedBack;
 };
+
+export interface AddCommentRequest {
+  id: string;
+  userId: string;
+  text: string;
+}
+
+export interface AddReplyRequest {
+  feedbackId: string;
+  commentId: string;
+  userId: string;
+  text: string;
+}

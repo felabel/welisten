@@ -69,7 +69,9 @@ export interface AddCommentResponse {
 
 export interface AddReplyRequest {
   feedbackId: string;
-  commentId: string;
+  commentId: number | null;
   userId: string;
   text: string;
+  username: string;
+  email: string;
 }

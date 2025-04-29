@@ -12,7 +12,6 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 import { AddCommentRequest } from "../../services/api.types";
 import { toast } from "react-toastify";
-
 const FeedbackDetails = () => {
   const { id } = useParams();
   const feedbackId = id ?? "";
@@ -75,7 +74,7 @@ const FeedbackDetails = () => {
 
         <div className={styles.commentsSection}>
           <h3>{suggestion?.comments?.length} comments</h3>
-          <Replies replies={suggestion?.comments} />
+          <Replies replies={suggestion?.comments} feedbackId={feedbackId} />
         </div>
 
         <form className={styles.addComment} onSubmit={handleSubmit}>

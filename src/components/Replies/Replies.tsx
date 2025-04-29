@@ -1,12 +1,55 @@
 import { useState } from "react";
 import styles from "./replies.module.scss";
+import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store/store";
+import { useAddReplyMutation } from "../../services/protectedApi";
+import { AddReplyRequest } from "../../services/api.types";
 
-const Replies = ({ replies }: { replies: any }) => {
+const Replies = ({
+  replies,
+  feedbackId,
+}: {
+  replies: any;
+  feedbackId: string;
+}) => {
   const [activeReplyId, setActiveReplyId] = useState<number | null>(null);
+  const auth = useSelector((state: RootState) => state.auth.user);
+  const [addReply] = useAddReplyMutation();
 
   const toggleReplyBox = (id: number, reply: any) => {
     console.log("Toggling reply for comment:", reply);
     setActiveReplyId(activeReplyId === id ? null : id);
+  };
+
+  const [commentText, setCommentText] = useState("");
+  const charLimit = 225;
+  const charsLeft = charLimit - commentText.length;
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!commentText.trim() || !auth) return;
+    const payload: AddReplyRequest = {
+      feedbackId: feedbackId,
+      userId: auth.fullUser?.id, // Using token as userId - adjust if your API expects different
+      text: commentText,
+      email: auth.email,
+      username: auth.fullUser?.username,
+      commentId: activeReplyId,
+    };
+    try {
+      const result = await addReply(payload).unwrap();
+      setCommentText("");
+      console.log("result is", result);
+      if ("message" in result) {
+        toast.success(result?.message || "Comment added successfully");
+      } else {
+        toast.error("something went wrong!");
+      }
+    } catch (error) {
+      toast.error("Failed to add comment:");
+    }
   };
 
   return (
@@ -25,15 +68,24 @@ const Replies = ({ replies }: { replies: any }) => {
               <p className={styles.text}>{reply.text}</p>
 
               {activeReplyId === reply.id && (
-                <form className={styles.replyBox}>
+                <form className={styles.addComment} onSubmit={handleSubmit}>
                   <textarea
                     className={styles.commentInput}
                     placeholder="Add your reply..."
-                    maxLength={225}
+                    maxLength={charLimit}
+                    value={commentText}
+                    onChange={(e) => setCommentText(e.target.value)}
                   />
-                  <button type="submit" className={styles.submitButton}>
-                    Submit
-                  </button>
+                  <div className={styles.commentFooter}>
+                    <span>{charsLeft} characters left</span>
+                    <button
+                      type="submit"
+                      className={styles.postComment}
+                      disabled={!commentText.trim() || charsLeft < 0}
+                    >
+                      Reply
+                    </button>
+                  </div>
                 </form>
               )}
 

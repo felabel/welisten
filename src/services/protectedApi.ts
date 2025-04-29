@@ -1,4 +1,8 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import {
+  BaseQueryFn,
+  createApi,
+  fetchBaseQuery,
+} from "@reduxjs/toolkit/query/react";
 import { API_BASE_URL } from "../config";
 import {
   AddCommentRequest,
@@ -8,8 +12,18 @@ import {
   FeedBack,
   FeedBackResponse,
 } from "./api.types";
-import * as TagTypes from "./tags"; // Import all tags
-import { ALL_FEEDBACK } from "./tags";
+
+import {
+  FetchArgs,
+  FetchBaseQueryError,
+  FetchBaseQueryMeta,
+} from "@reduxjs/toolkit/query/react";
+
+// import { FetchArgs } from "@reduxjs/toolkit/query/react";
+import * as tags from "./tags"; // Import all tags
+import { toast } from "react-toastify";
+import { logout } from "../store/authSlice";
+
 const baseQuery = fetchBaseQuery({
   baseUrl: API_BASE_URL,
   prepareHeaders: (headers, api) => {
@@ -22,10 +36,31 @@ const baseQuery = fetchBaseQuery({
   },
 });
 
+export const baseQueryWithReauth: BaseQueryFn<
+  string | FetchArgs,
+  unknown,
+  FetchBaseQueryError,
+  {},
+  FetchBaseQueryMeta
+> = async (args, api, extraOptions) => {
+  let result = await baseQuery(args, api, extraOptions);
+
+  let err = result?.error as any;
+  if (err && err.error && err.error.statusCode === 401) {
+    // logout
+    toast.error("Your session has expired, please log in again.");
+    setTimeout(() => {
+      api.dispatch(logout());
+    }, 1000);
+  }
+
+  return result;
+};
+
 export const protectedApi = createApi({
   reducerPath: "protectedApi",
-  baseQuery,
-  tagTypes: [ALL_FEEDBACK],
+  baseQuery: baseQueryWithReauth,
+  tagTypes: ["Feedback"],
   endpoints: (builder) => ({
     createFeedback: builder.mutation({
       query: (feedbackData) => ({
@@ -33,6 +68,7 @@ export const protectedApi = createApi({
         method: "POST",
         body: feedbackData,
       }),
+      invalidatesTags: ["Feedback"],
     }),
     // get feedback
     getFeedback: builder.query<FeedBackResponse, void>({
@@ -40,7 +76,7 @@ export const protectedApi = createApi({
         url: "/feedback",
         method: "GET",
       }),
-      providesTags: [ALL_FEEDBACK],
+      providesTags: ["Feedback"],
     }),
 
     getFeedbackById: builder.query<FeedBackResponse, string>({
@@ -55,7 +91,7 @@ export const protectedApi = createApi({
         method: "PUT",
         body: feedbackData,
       }),
-      invalidatesTags: [ALL_FEEDBACK],
+      invalidatesTags: ["Feedback"],
     }),
 
     // add comment on figma
@@ -65,7 +101,7 @@ export const protectedApi = createApi({
         method: "POST",
         body: commentData,
       }),
-      invalidatesTags: [ALL_FEEDBACK],
+      invalidatesTags: ["Feedback"],
     }),
 
     //upvoteFeedback
@@ -75,16 +111,17 @@ export const protectedApi = createApi({
         method: "POST",
         body: data,
       }),
+      invalidatesTags: ["Feedback"],
     }),
 
     // reply comment
-    addReply: builder.mutation<void, AddReplyRequest>({
+    addReply: builder.mutation<any, AddReplyRequest>({
       query: (replyData) => ({
         url: "/feedback/reply",
         method: "POST",
         body: replyData,
       }),
-      invalidatesTags: [ALL_FEEDBACK],
+      invalidatesTags: ["Feedback"],
     }),
 
     // get status count
@@ -103,7 +140,7 @@ export const protectedApi = createApi({
       }),
     }),
   }),
-});
+}).enhanceEndpoints({ addTagTypes: Object.values(tags) });
 
 export const {
   useCreateFeedbackMutation,

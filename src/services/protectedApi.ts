@@ -2,12 +2,14 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { API_BASE_URL } from "../config";
 import {
   AddCommentRequest,
+  AddCommentResponse,
   AddReplyRequest,
   categoryResponse,
   FeedBack,
   FeedBackResponse,
 } from "./api.types";
-
+import * as TagTypes from "./tags"; // Import all tags
+import { ALL_FEEDBACK } from "./tags";
 const baseQuery = fetchBaseQuery({
   baseUrl: API_BASE_URL,
   prepareHeaders: (headers, api) => {
@@ -23,6 +25,7 @@ const baseQuery = fetchBaseQuery({
 export const protectedApi = createApi({
   reducerPath: "protectedApi",
   baseQuery,
+  tagTypes: [ALL_FEEDBACK],
   endpoints: (builder) => ({
     createFeedback: builder.mutation({
       query: (feedbackData) => ({
@@ -37,6 +40,7 @@ export const protectedApi = createApi({
         url: "/feedback",
         method: "GET",
       }),
+      providesTags: [ALL_FEEDBACK],
     }),
 
     getFeedbackById: builder.query<FeedBackResponse, string>({
@@ -51,15 +55,17 @@ export const protectedApi = createApi({
         method: "PUT",
         body: feedbackData,
       }),
+      invalidatesTags: [ALL_FEEDBACK],
     }),
 
     // add comment on figma
-    addComment: builder.mutation<void, AddCommentRequest>({
+    addComment: builder.mutation<AddCommentResponse, AddCommentRequest>({
       query: (commentData) => ({
         url: "/feedback/comment",
         method: "POST",
         body: commentData,
       }),
+      invalidatesTags: [ALL_FEEDBACK],
     }),
 
     //upvoteFeedback
@@ -78,6 +84,7 @@ export const protectedApi = createApi({
         method: "POST",
         body: replyData,
       }),
+      invalidatesTags: [ALL_FEEDBACK],
     }),
 
     // get status count

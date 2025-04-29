@@ -11,6 +11,7 @@ export type LoginType = {
 export type AuthResponse = {
   message: string;
   token?: string;
+  user?: any | null;
 };
 
 export type categoryResponse = {
@@ -51,6 +52,19 @@ export interface AddCommentRequest {
   id: string;
   userId: string;
   text: string;
+  email: string;
+  username: string;
+}
+export interface AddCommentResponse {
+  message: string;
+  feedback: {
+    id: string;
+    user: string;
+    title: string;
+    category: string;
+    detail: string;
+    // Add other fields if they exist
+  };
 }
 
 export interface AddReplyRequest {

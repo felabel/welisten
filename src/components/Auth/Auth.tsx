@@ -44,9 +44,10 @@ const Auth = () => {
 
   const onRegisterSubmit = async (data: RegisterFormInputs) => {
     try {
-      await registerUser(data).unwrap();
+      const response = await registerUser(data).unwrap();
       navigate("/dashoard");
       setIsSignUp(false);
+      setUser({ userName: data.username, fullUser: response.user });
     } catch (error) {
       alert("Registration failed");
     }
@@ -54,10 +55,18 @@ const Auth = () => {
 
   const onLoginSubmit = async (data: LoginFormInputs) => {
     try {
-      const response = await loginUser(data).unwrap(); // unwrap the response to get data directly
+      const response = await loginUser(data).unwrap();
+      console.log("response here", response);
       if (response?.token) {
         navigate("/dashboard");
-        dispatch(setUser({ email: data.email, token: response.token }));
+        dispatch(
+          setUser({
+            email: data.email,
+            token: response.token,
+            isLoggingIn: true,
+            fullUser: response.user,
+          })
+        );
         dispatch(setToken(response.token)); // Store token in state
       } else {
         toast.error("Login failed: No token received");

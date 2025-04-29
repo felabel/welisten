@@ -30,6 +30,20 @@
 
 .content {
   flex: 1;
+  .replyBox {
+    width: 100%;
+    margin: 1rem 0;
+    .commentInput {
+      width: 100%;
+      min-height: 100px;
+      border: 1px solid #dfe3fa;
+      border-radius: 4px;
+      padding: 8px;
+      margin-bottom: 8px;
+      max-height: 100px;
+      max-width: 100% !important;
+    }
+  }
 }
 
 .commentAuthor {
@@ -64,4 +78,15 @@
   border: none;
   border-radius: 3px;
   cursor: pointer;
+}
+.replies_wrapper {
+  display: flex;
+  gap: 1rem;
+  position: relative;
+  margin-bottom: 1rem;
+}
+.line_wrapper {
+  border-left: 0.5px solid grey;
+  margin-left: 7%;
+  padding-left: 3%;
 }

@@ -38,7 +38,7 @@ const FeedbackForm = () => {
   });
 
   const [createFeedback] = useCreateFeedbackMutation();
-  const [updateFeedback] = useUpdateFeedbackMutation(); // ✅ Get update mutation
+  const [updateFeedback] = useUpdateFeedbackMutation();
 
   const onSubmit: SubmitHandler<FeedbackInputs> = async (data) => {
     try {

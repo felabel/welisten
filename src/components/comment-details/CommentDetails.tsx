@@ -1,18 +1,58 @@
 import { useNavigate, useParams } from "react-router-dom";
+import { useState } from "react";
 import SuggestionCard from "../suggestion/SuggestionCard";
 import styles from "./FeedbackDetails.module.scss";
-import { repliesData, singleComment } from "../../data/suggestions";
 import { FeedBackBtn, GoBackBtn } from "../shared/FeedBackBtn";
 import Replies from "../Replies/Replies";
-import { useGetFeedbackByIdQuery } from "../../services/protectedApi";
+import {
+  useGetFeedbackByIdQuery,
+  useAddCommentMutation,
+} from "../../services/protectedApi";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store/store";
+import { AddCommentRequest } from "../../services/api.types";
+import { toast } from "react-toastify";
 
 const FeedbackDetails = () => {
   const { id } = useParams();
-  const feedbackId = id ?? ""; // Ensures it is always a string
+  const feedbackId = id ?? "";
   const singleFeedbackQueryResult = useGetFeedbackByIdQuery(feedbackId);
   const suggestion = singleFeedbackQueryResult.data?.feedback;
-
   const navigate = useNavigate();
+  const auth = useSelector((state: RootState) => state.auth.user);
+  const [addComment] = useAddCommentMutation();
+
+  console.log("uyser", auth.fullUser);
+  // State for comment text
+  const [commentText, setCommentText] = useState("");
+  const charLimit = 225;
+  const charsLeft = charLimit - commentText.length;
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!commentText.trim() || !auth) return;
+
+    try {
+      const payload: AddCommentRequest = {
+        id: feedbackId,
+        userId: auth.fullUser?.id, // Using token as userId - adjust if your API expects different
+        text: commentText,
+        email: auth.email,
+        username: auth.fullUser?.username,
+      };
+
+      const result = await addComment(payload).unwrap();
+      setCommentText("");
+      console.log("result is", result);
+      if ("message" in result) {
+        toast.success(result?.message || "Comment added successfully");
+      }
+    } catch (error) {
+      toast.error("Failed to add comment:");
+    }
+  };
+
   return (
     <div className={styles.main}>
       <div className={styles.wrapper}>
@@ -20,9 +60,7 @@ const FeedbackDetails = () => {
           <GoBackBtn stroke="#4661E6" textColor="#647196" />
           <FeedBackBtn
             text="Edit Feedback"
-            customClick={() => {
-              navigate(`/feedback/edit/${id}`);
-            }}
+            customClick={() => navigate(`/feedback/edit/${id}`)}
           />
         </div>
 
@@ -31,28 +69,32 @@ const FeedbackDetails = () => {
           title={suggestion?.title}
           category={suggestion?.category}
           // @ts-ignore
-
           detail={suggestion?.detail}
+          comments={suggestion?.comments?.length}
         />
 
         <div className={styles.commentsSection}>
-          <h3>4 Comments</h3>
-          <Replies replies={singleComment} />
-          <div className={styles.replies_wrapper}>
-            <div className={styles.replies_line}></div>
-            <Replies replies={repliesData} />
-          </div>
+          <h3>{suggestion?.comments?.length} comments</h3>
+          <Replies replies={suggestion?.comments} />
         </div>
 
-        <form className={styles.addComment}>
+        <form className={styles.addComment} onSubmit={handleSubmit}>
           <textarea
             className={styles.commentInput}
             placeholder="Add your comment..."
-            maxLength={225}
+            maxLength={charLimit}
+            value={commentText}
+            onChange={(e) => setCommentText(e.target.value)}
           />
           <div className={styles.commentFooter}>
-            <span>225 characters left</span>
-            <button className={styles.postComment}>Post Comment</button>
+            <span>{charsLeft} characters left</span>
+            <button
+              type="submit"
+              className={styles.postComment}
+              disabled={!commentText.trim() || charsLeft < 0}
+            >
+              Post Comment
+            </button>
           </div>
         </form>
       </div>

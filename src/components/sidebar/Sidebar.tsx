@@ -1,8 +1,16 @@
 import { useNavigate } from "react-router-dom";
 import styles from "./Sidebar.module.scss";
+import { Button } from "@mui/material";
+import { logout } from "../../store/authSlice";
+import store from "../../store/store";
+
+export const logOutHandler = () => {
+  store.dispatch(logout());
+};
 
 const Sidebar = () => {
   const navigate = useNavigate();
+
   return (
     <div className={styles.sidebar}>
       <div className={styles.brand}>
@@ -44,6 +52,7 @@ const Sidebar = () => {
           </li>
         </ul>
       </div>
+      <Button onClick={() => logOutHandler()}>Log Out</Button>
     </div>
   );
 };

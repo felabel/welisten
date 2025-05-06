@@ -3,6 +3,7 @@ import styles from "./Sidebar.module.scss";
 import { Button } from "@mui/material";
 import { logout } from "../../store/authSlice";
 import store from "../../store/store";
+import { useGetStatusCountQuery } from "../../services/protectedApi";
 
 export const logOutHandler = () => {
   store.dispatch(logout());
@@ -10,6 +11,9 @@ export const logOutHandler = () => {
 
 const Sidebar = () => {
   const navigate = useNavigate();
+  const feedbackStatusCountuQery = useGetStatusCountQuery();
+
+  console.log("status", feedbackStatusCountuQery);
 
   return (
     <div className={styles.sidebar}>
@@ -29,27 +33,15 @@ const Sidebar = () => {
       <div className={styles.roadmap} onClick={() => navigate("/roadmap")}>
         <h2>Roadmap</h2>
         <ul>
-          <li>
-            <div className={styles.inner_flex}>
-              <div className={styles.dot}></div>
-              <span className={styles.roadmap_name}>Planned</span>
-            </div>
-            <span className={styles.roadmap_count}>2</span>
-          </li>
-          <li>
-            <div className={styles.inner_flex}>
-              <div className={styles.dot}></div>
-              <span className={styles.roadmap_name}>In-Progress</span>
-            </div>
-            <span className={styles.roadmap_count}>2</span>
-          </li>
-          <li>
-            <div className={styles.inner_flex}>
-              <div className={styles.dot}></div>
-              <span className={styles.roadmap_name}>Live</span>
-            </div>
-            <span className={styles.roadmap_count}>2</span>
-          </li>
+          {feedbackStatusCountuQery?.data?.statusCount?.map((item: any) => (
+            <li>
+              <div className={styles.inner_flex}>
+                <div className={styles.dot}></div>
+                <span className={styles.roadmap_name}>{item.name}</span>
+              </div>
+              <span className={styles.roadmap_count}>{item.count}</span>
+            </li>
+          ))}
         </ul>
       </div>
       <Button onClick={() => logOutHandler()}>Log Out</Button>

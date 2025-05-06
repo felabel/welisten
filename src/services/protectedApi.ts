@@ -60,7 +60,7 @@ export const baseQueryWithReauth: BaseQueryFn<
 export const protectedApi = createApi({
   reducerPath: "protectedApi",
   baseQuery: baseQueryWithReauth,
-  tagTypes: ["Feedback"],
+  tagTypes: ["Feedback", "singleFeedback"],
   endpoints: (builder) => ({
     createFeedback: builder.mutation({
       query: (feedbackData) => ({
@@ -84,6 +84,7 @@ export const protectedApi = createApi({
         url: `/feedback/${id}`,
         method: "GET",
       }),
+      providesTags: ["singleFeedback"],
     }),
     updateFeedback: builder.mutation<FeedBackResponse, FeedBack>({
       query: (feedbackData) => ({
@@ -105,13 +106,24 @@ export const protectedApi = createApi({
     }),
 
     //upvoteFeedback
-    upvoteFeedback: builder.mutation<void, { id: string }>({
-      query: (data) => ({
+    // upvoteFeedback: builder.mutation<void, { id: string }>({
+    //   query: (data) => ({
+    //     url: "/feedback/upvote",
+    //     method: "POST",
+    //     body: data,
+    //   }),
+    //   invalidatesTags: ["Feedback"],
+    // }),
+    upvoteFeedback: builder.mutation<
+      any,
+      { id: string | number; userId: string }
+    >({
+      query: ({ id, userId }) => ({
         url: "/feedback/upvote",
         method: "POST",
-        body: data,
+        body: { id, userId },
       }),
-      invalidatesTags: ["Feedback"],
+      invalidatesTags: ["Feedback", "singleFeedback"],
     }),
 
     // reply comment
@@ -125,7 +137,7 @@ export const protectedApi = createApi({
     }),
 
     // get status count
-    getStatusCount: builder.query<Record<string, number>, void>({
+    getStatusCount: builder.query<Record<string, any>, void>({
       query: () => ({
         url: "/feedback/status-count",
         method: "GET",

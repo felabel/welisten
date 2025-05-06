@@ -21,7 +21,6 @@ const FeedbackDetails = () => {
   const auth = useSelector((state: RootState) => state.auth.user);
   const [addComment] = useAddCommentMutation();
 
-  console.log("uyser", auth.fullUser);
   // State for comment text
   const [commentText, setCommentText] = useState("");
   const charLimit = 225;
@@ -29,7 +28,6 @@ const FeedbackDetails = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!commentText.trim() || !auth) return;
 
     try {
@@ -70,6 +68,8 @@ const FeedbackDetails = () => {
           // @ts-ignore
           detail={suggestion?.detail}
           comments={suggestion?.comments?.length}
+          id={feedbackId}
+          upvotes={suggestion?.upvotes}
         />
 
         <div className={styles.commentsSection}>

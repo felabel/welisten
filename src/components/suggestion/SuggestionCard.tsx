@@ -2,6 +2,10 @@ import { useNavigate } from "react-router-dom";
 import CommentIcon from "../../assets/icons/CommentIcon";
 import TopArrowIcon from "../../assets/icons/TopArrowIcon";
 import styles from "./SuggestionCard.module.scss";
+import { useUpvoteFeedbackMutation } from "../../services/protectedApi";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store/store";
+import { toast } from "react-toastify";
 
 export interface SuggestionCardProps {
   id: string | number;
@@ -20,16 +24,46 @@ const SuggestionCard = ({
   detail,
   id,
 }: SuggestionCardProps) => {
+  const userId = useSelector(
+    (state: RootState) => state.auth.user?.fullUser?.id
+  );
+
   const navigave = useNavigate();
+  const [upvoteFeedback] = useUpvoteFeedbackMutation();
+
+  const handleUpvote = async () => {
+    if (!userId) {
+      return;
+    }
+    const payload: any = {
+      id,
+      userId,
+    };
+    try {
+      const result = await upvoteFeedback(payload).unwrap();
+      if ("message" in result) {
+        toast.success("Feedback upvoted!");
+      } else {
+        toast.error("Failed, try again!");
+      }
+    } catch (error) {
+      console.error("Failed to upvote:", error);
+      toast.error("Failed, try again!");
+    }
+  };
+
   return (
-    <div className={styles.card} onClick={() => navigave(`/feedback/${id}`)}>
-      <div className={styles.upvotes}>
+    <div className={styles.card}>
+      <div className={styles.upvotes} onClick={handleUpvote}>
         <div>
           <TopArrowIcon />
         </div>
         {upvotes}
       </div>
-      <div className={styles.details}>
+      <div
+        className={styles.details}
+        onClick={() => navigave(`/feedback/${id}`)}
+      >
         <h3>{title}</h3>
         <p className={styles.content}>{detail}</p>
         <span className={styles.category}>{category}</span>

@@ -8,6 +8,7 @@ const Content = () => {
   const feedbackQueryResult = useGetFeedbackQuery();
   const feedbacks = feedbackQueryResult.data?.feedbacks;
 
+  console.log("feedbacks", feedbacks);
   return (
     <div>
       {empty ? (

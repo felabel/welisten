@@ -92,7 +92,6 @@ const Roadmap: React.FC = () => {
         onDragStart={(e) => handleDrag(e, card, category)}
         onDragOver={(e) => e.preventDefault()}
         className={styles.cardWrapper}
-        style={{ marginBottom: "1rem" }}
       >
         <RoadmapCard
           id={card.id}
@@ -108,20 +107,15 @@ const Roadmap: React.FC = () => {
   };
 
   const renderTabsContent = () => {
-    const tabItems = [
-      { label: "Planned", count: roadmapData.planned.length },
-      { label: "In Progress", count: roadmapData.inProgress.length },
-      { label: "Live", count: roadmapData.live.length },
-    ];
-
     return (
-      <Tabs tabs={tabItems}>
+      <Tabs tabs={["Planned", "In Progress", "Live"]}>
         <div className={styles.tabContent}>{renderCards("planned")}</div>
         <div className={styles.tabContent}>{renderCards("inProgress")}</div>
         <div className={styles.tabContent}>{renderCards("live")}</div>
       </Tabs>
     );
   };
+
   const categoryData = [
     { category: "planned", summary: "Ideas prioritized for research" },
     { category: "inProgress", summary: "Currently being developed" },

@@ -1,8 +1,14 @@
+// Tabs.tsx
 import React, { useState, ReactNode } from "react";
 import styles from "./Tabs.module.scss";
 
+type TabItem = {
+  label: string;
+  count?: number;
+};
+
 type TabsProps = {
-  tabs: string[];
+  tabs: TabItem[];
   children: ReactNode[];
 };
 
@@ -20,7 +26,10 @@ const Tabs: React.FC<TabsProps> = ({ tabs, children }) => {
             }`}
             onClick={() => setActiveTab(index)}
           >
-            {tab}
+            {tab.label}
+            {tab.count !== undefined && (
+              <span className={styles.tabCount}>({tab.count})</span>
+            )}
           </button>
         ))}
       </div>

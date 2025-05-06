@@ -144,6 +144,14 @@ export const protectedApi = createApi({
       }),
     }),
 
+    updateFeedbackStatus: builder.mutation({
+      query: ({ id, status }) => ({
+        url: `feedback/status`,
+        method: "PUT",
+        body: { id, status },
+      }),
+    }),
+
     // get categoris
     getCategories: builder.query<categoryResponse, void>({
       query: () => ({
@@ -163,5 +171,6 @@ export const {
   useAddCommentMutation,
   useAddReplyMutation,
   useGetStatusCountQuery,
+  useUpdateFeedbackStatusMutation,
   useUpvoteFeedbackMutation,
 } = protectedApi;

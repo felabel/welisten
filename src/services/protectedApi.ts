@@ -92,7 +92,7 @@ export const protectedApi = createApi({
         method: "PUT",
         body: feedbackData,
       }),
-      invalidatesTags: ["Feedback"],
+      invalidatesTags: ["Feedback", "singleFeedback"],
     }),
 
     // add comment on figma
@@ -102,7 +102,7 @@ export const protectedApi = createApi({
         method: "POST",
         body: commentData,
       }),
-      invalidatesTags: ["Feedback"],
+      invalidatesTags: ["Feedback", "singleFeedback"],
     }),
 
     //upvoteFeedback

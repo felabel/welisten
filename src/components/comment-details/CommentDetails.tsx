@@ -41,7 +41,6 @@ const FeedbackDetails = () => {
 
       const result = await addComment(payload).unwrap();
       setCommentText("");
-      console.log("result is", result);
       if ("message" in result) {
         toast.success(result?.message || "Comment added successfully");
       }

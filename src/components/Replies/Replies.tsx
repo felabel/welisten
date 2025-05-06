@@ -18,7 +18,6 @@ const Replies = ({
   const [addReply] = useAddReplyMutation();
 
   const toggleReplyBox = (id: number, reply: any) => {
-    console.log("Toggling reply for comment:", reply);
     setActiveReplyId(activeReplyId === id ? null : id);
   };
 
@@ -41,7 +40,6 @@ const Replies = ({
     try {
       const result = await addReply(payload).unwrap();
       setCommentText("");
-      console.log("result is", result);
       if ("message" in result) {
         toast.success(result?.message || "Comment added successfully");
       } else {

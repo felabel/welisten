@@ -56,7 +56,6 @@ const Auth = () => {
   const onLoginSubmit = async (data: LoginFormInputs) => {
     try {
       const response = await loginUser(data).unwrap();
-      console.log("response here", response);
       if (response?.token) {
         navigate("/dashboard");
         dispatch(

@@ -13,8 +13,6 @@ const Sidebar = () => {
   const navigate = useNavigate();
   const feedbackStatusCountuQery = useGetStatusCountQuery();
 
-  console.log("status", feedbackStatusCountuQery);
-
   return (
     <div className={styles.sidebar}>
       <div className={styles.brand}>

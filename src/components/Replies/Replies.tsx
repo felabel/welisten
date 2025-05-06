@@ -17,7 +17,7 @@ const Replies = ({
   const auth = useSelector((state: RootState) => state.auth.user);
   const [addReply] = useAddReplyMutation();
 
-  const toggleReplyBox = (id: number, reply: any) => {
+  const toggleReplyBox = (id: number) => {
     setActiveReplyId(activeReplyId === id ? null : id);
   };
 
@@ -40,6 +40,7 @@ const Replies = ({
     try {
       const result = await addReply(payload).unwrap();
       setCommentText("");
+      console.log("result is", result);
       if ("message" in result) {
         toast.success(result?.message || "Comment added successfully");
       } else {
@@ -92,7 +93,7 @@ const Replies = ({
                   className={styles.post_reply}
                   onClick={(e) => {
                     e.stopPropagation(); // Prevent triggering the parent click
-                    toggleReplyBox(reply.id, reply); // Pass the reply object
+                    toggleReplyBox(reply.id); // Pass the reply object
                   }}
                 >
                   {activeReplyId === reply.id ? "Cancel" : "Post Reply"}

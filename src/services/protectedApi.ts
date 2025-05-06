@@ -106,14 +106,6 @@ export const protectedApi = createApi({
     }),
 
     //upvoteFeedback
-    // upvoteFeedback: builder.mutation<void, { id: string }>({
-    //   query: (data) => ({
-    //     url: "/feedback/upvote",
-    //     method: "POST",
-    //     body: data,
-    //   }),
-    //   invalidatesTags: ["Feedback"],
-    // }),
     upvoteFeedback: builder.mutation<
       any,
       { id: string | number; userId: string }
@@ -133,7 +125,7 @@ export const protectedApi = createApi({
         method: "POST",
         body: replyData,
       }),
-      invalidatesTags: ["Feedback"],
+      invalidatesTags: ["Feedback", "singleFeedback"],
     }),
 
     // get status count

@@ -57,9 +57,7 @@ const Roadmap: React.FC = () => {
     event: React.DragEvent,
     newCategory: keyof RoadmapData
   ) => {
-    const { card, oldCategory } = JSON.parse(
-      event.dataTransfer.getData("cardData")
-    );
+    const { card } = JSON.parse(event.dataTransfer.getData("cardData"));
 
     // Determine the new status based on the category
     const newStatus =

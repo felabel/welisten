@@ -31,10 +31,10 @@ const FeedbackForm = () => {
   const {
     control,
     handleSubmit,
-    setValue, // ✅ Allows setting form values for prefill
+    setValue,
     formState: { errors, isValid },
   } = useForm<FeedbackInputs>({
-    mode: "onChange", // Ensure validation runs on each input change
+    mode: "onChange",
   });
 
   const [createFeedback] = useCreateFeedbackMutation();
@@ -60,7 +60,7 @@ const FeedbackForm = () => {
     }
   };
 
-  // ✅ Pre-fill form when editing
+  // Pre-fill form when editing
   useEffect(() => {
     if (feedbackId && feedback) {
       setIsEdit(true);
@@ -70,6 +70,7 @@ const FeedbackForm = () => {
     }
   }, [feedbackId, feedback, setValue]);
 
+  console.log("is it valid?", !isValid);
   return (
     <div className={styles.feedbackFormContainer}>
       <GoBackBtn stroke="#4661E6" textColor="#647196" />
@@ -120,6 +121,9 @@ const FeedbackForm = () => {
               rules={{ required: "Category is required" }}
               render={({ field }) => (
                 <select {...field} id="category" className={styles.select}>
+                  <option value="" disabled selected>
+                    Please select a category
+                  </option>
                   {categories?.map((category, index) => (
                     <option key={index} value={category}>
                       {category}
@@ -172,7 +176,7 @@ const FeedbackForm = () => {
             <button
               type="submit"
               className={styles.addButton}
-              disabled={!isValid}
+              // disabled={!isValid}
             >
               {isEdit ? "Update Feedback" : "Add Feedback"}
             </button>

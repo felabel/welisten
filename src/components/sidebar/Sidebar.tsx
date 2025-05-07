@@ -3,16 +3,20 @@ import styles from "./Sidebar.module.scss";
 import { Button } from "@mui/material";
 import { logout } from "../../store/authSlice";
 import store from "../../store/store";
-import { useGetStatusCountQuery } from "../../services/protectedApi";
+import {
+  useGetCategoriesQuery,
+  useGetStatusCountQuery,
+} from "../../services/protectedApi";
 
 export const logOutHandler = () => {
   store.dispatch(logout());
 };
 
-const Sidebar = () => {
+const Sidebar = ({ currentCategory, setCurrentCategory }: any) => {
   const navigate = useNavigate();
   const feedbackStatusCountuQery = useGetStatusCountQuery();
-
+  const categoriesQueryResult = useGetCategoriesQuery();
+  const categories = categoriesQueryResult.data?.categories;
   return (
     <div className={styles.sidebar}>
       <div className={styles.brand}>
@@ -20,12 +24,21 @@ const Sidebar = () => {
         <p>Feedback Board</p>
       </div>
       <div className={styles.filters}>
-        <button>All</button>
-        <button>UI</button>
-        <button>UX</button>
-        <button>Enhancement</button>
-        <button>Bug</button>
-        <button>Feature</button>
+        <button
+          onClick={() => setCurrentCategory("all")}
+          className={currentCategory === "all" ? styles.active : ""}
+        >
+          All
+        </button>
+        {categories?.map((item: string, i: number) => (
+          <button
+            key={i}
+            onClick={() => setCurrentCategory(item)}
+            className={currentCategory === item ? styles.active : ""}
+          >
+            {item}
+          </button>
+        ))}
       </div>
 
       <div className={styles.roadmap} onClick={() => navigate("/roadmap")}>

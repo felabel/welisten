@@ -1,22 +1,30 @@
-import { useState } from "react";
 import { Select, MenuItem } from "@mui/material";
 import BulbIcon from "../../assets/icons/BulbIcon";
 import styles from "./Header.module.scss";
 import { FeedBackBtn, GoBackBtn } from "../shared/FeedBackBtn";
+import { useGetFeedbackQuery } from "../../services/protectedApi";
 
 type Props = {
   hasIcon?: boolean;
   title?: string;
   hasBackBtn?: boolean;
   isHome?: boolean;
+  currentSort?: string;
+  setCurrentSort?: any;
+  feedbackCount?: number;
 };
 const Header = ({
   hasIcon = true,
-  title = "6 Suggestions",
+  title = "Suggestions",
   hasBackBtn,
   isHome = true,
+  currentSort,
+  setCurrentSort,
+  feedbackCount,
 }: Props) => {
-  const [overviewFilter, setOverviewFilter] = useState("most-upvotes");
+  const { refetch } = useGetFeedbackQuery({
+    sort: currentSort,
+  });
   return (
     <div className={styles.header}>
       <div className={styles.suggestions}>
@@ -27,22 +35,23 @@ const Header = ({
         )}
         <div>
           {hasBackBtn && <GoBackBtn />}
-
-          <h2>{title}</h2>
+          {feedbackCount && <h2>{`${feedbackCount} ${title}`}</h2>}
         </div>
         {isHome && (
           <>
             <span className={styles.span}>Sort by:</span>
             <Select
-              value={overviewFilter}
+              value={currentSort}
               onChange={(e) => {
-                setOverviewFilter(e.target.value);
+                setCurrentSort(e.target.value);
+                refetch();
               }}
               className={styles.my_select}
               inputProps={{ "aria-label": "Without label" }}
             >
+              <MenuItem value="all">All</MenuItem>
               <MenuItem value="most-upvotes">Most Upvotes</MenuItem>
-              <MenuItem value="least-Upvotes">Least Upvotes</MenuItem>
+              <MenuItem value="least-upvotes">Least Upvotes</MenuItem>
               <MenuItem value="most-comments">Most Comments</MenuItem>
               <MenuItem value="least-comments">Least Comments</MenuItem>
             </Select>

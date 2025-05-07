@@ -26,7 +26,7 @@ type RoadmapData = {
 };
 
 const Roadmap: React.FC = () => {
-  const { data: feedbackQueryResult, refetch } = useGetFeedbackQuery();
+  const { data: feedbackQueryResult, refetch } = useGetFeedbackQuery({});
   const [updateFeedbackStatus] = useUpdateFeedbackStatusMutation();
 
   // Transform the feedback data into our RoadmapData structure

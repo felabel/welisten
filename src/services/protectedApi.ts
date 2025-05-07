@@ -71,11 +71,29 @@ export const protectedApi = createApi({
       invalidatesTags: ["Feedback"],
     }),
     // get feedback
-    getFeedback: builder.query<FeedBackResponse, void>({
-      query: () => ({
-        url: "/feedback",
-        method: "GET",
-      }),
+    // getFeedback: builder.query<FeedBackResponse, void>({
+    //   query: () => ({
+    //     url: "/feedback",
+    //     method: "GET",
+    //   }),
+    //   providesTags: ["Feedback"],
+    // }),
+    // services/protectedApi.ts
+    // services/protectedApi.ts
+    getFeedback: builder.query<
+      { feedbacks: FeedBack[] },
+      { category?: string; sort?: string }
+    >({
+      query: (params) => {
+        const queryParams = new URLSearchParams();
+        if (params?.category) queryParams.append("category", params.category);
+        if (params?.sort) queryParams.append("sort", params.sort);
+
+        return {
+          url: `/feedback?${queryParams.toString()}`,
+          method: "GET",
+        };
+      },
       providesTags: ["Feedback"],
     }),
 

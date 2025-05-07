@@ -2,12 +2,16 @@ import { useState } from "react";
 import SuggestionCard from "../suggestion/SuggestionCard";
 import EmptyState from "../empty/EmptyState";
 import { useGetFeedbackQuery } from "../../services/protectedApi";
-const Content = () => {
+
+const Content = ({ currentCategory, currentSort, setFeedbackCount }: any) => {
   const [empty] = useState(false);
 
-  const feedbackQueryResult = useGetFeedbackQuery();
+  const feedbackQueryResult = useGetFeedbackQuery({
+    category: currentCategory === "all" ? undefined : currentCategory,
+    sort: currentSort,
+  });
   const feedbacks = feedbackQueryResult.data?.feedbacks;
-
+  setFeedbackCount(feedbacks?.length);
   return (
     <div>
       {empty ? (
